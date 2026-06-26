@@ -17,3 +17,9 @@
 //   [ ] Handle invalid input gracefully (print "Invalid option, try again.")
 // =============================================================================
 #include "user/user_menu.h"
+#include "database/db.h"
+#include "auth/session.h"
+
+void UserMenu::run(DB& db) {
+    // Stub for Dev 3 implementation
+}

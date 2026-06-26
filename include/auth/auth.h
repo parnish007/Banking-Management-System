@@ -20,3 +20,18 @@
 // DEPENDENCIES: db.h, models/user.h, models/account.h, auth/password.h, auth/session.h
 // =============================================================================
 #pragma once
+
+#include <string>
+
+class DB;
+
+namespace Auth {
+    bool registerUser(DB& db,
+                      const std::string& name,
+                      const std::string& username,
+                      const std::string& password);
+
+    bool loginUser(DB& db,
+                   const std::string& username,
+                   const std::string& password);
+}

@@ -3,6 +3,11 @@ build/
 *.exe
 *.o
 *.a
+*.db-shm
+*.db-wal
+CMakeFiles/
+CMakeCache.txt
+
 .vscode/
 .claude/
 notes/

@@ -16,3 +16,9 @@
 // DEPENDENCIES: db.h, auth/session.h, admin/approval.h, admin/user_mgmt.h
 // =============================================================================
 #pragma once
+
+class DB;
+
+namespace AdminMenu {
+    void run(DB& db);
+}

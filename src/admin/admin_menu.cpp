@@ -19,3 +19,9 @@
 //   [ ] Handle invalid input gracefully
 // =============================================================================
 #include "admin/admin_menu.h"
+#include "database/db.h"
+#include "auth/session.h"
+
+void AdminMenu::run(DB& db) {
+    // Stub for Dev 4 implementation
+}

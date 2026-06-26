@@ -1,72 +1,89 @@
-// TODO (Dev 2): Replace this smoke-test with the full login/register loop.
+// =============================================================================
+// OWNER : Dev 2 — Auth System
+// FILE  : src/main.cpp
+// ABOUT : Top-level entry point. Shows login/register menu and routes to
+//         user or admin menu based on Session::current().role.
+// =============================================================================
 #include <iostream>
-#include <iomanip>
+#include <string>
 #include "database/db.h"
 #include "database/schema.h"
-#include "models/user.h"
-#include "models/account.h"
-#include "models/transaction.h"
+#include "auth/auth.h"
+#include "auth/session.h"
+#include "user/user_menu.h"
+#include "admin/admin_menu.h"
 
-// Dev 2 will add these once auth is implemented:
-// #include "auth/auth.h"
-// #include "auth/session.h"
-// #include "user/user_menu.h"
-// #include "admin/admin_menu.h"
+std::string trim(const std::string& s) {
+    size_t start = s.find_first_not_of(" \t\r\n");
+    if (start == std::string::npos) return "";
+    size_t end = s.find_last_not_of(" \t\r\n");
+    return s.substr(start, end - start + 1);
+}
 
 int main() {
     try {
         DB db("banking.db");
         Schema::init(db);
 
-        std::cout << "=== Banking Management System — Dev 1 Smoke Test ===\n\n";
-        std::cout << "SQLite version : " << sqlite3_libversion() << "\n";
-        std::cout << "Database file  : banking.db\n\n";
+        while (true) {
+            std::cout << "\n=== Banking Management System ===\n";
+            std::cout << "1. Login\n";
+            std::cout << "2. Register\n";
+            std::cout << "3. Exit\n";
+            std::cout << "> ";
 
-        // Show all users (should include seeded admin)
-        auto users = UserModel::findAll(db);
-        std::cout << "--- Users (" << users.size() << ") ---\n";
-        std::cout << std::left
-                  << std::setw(4)  << "ID"
-                  << std::setw(20) << "Name"
-                  << std::setw(16) << "Username"
-                  << std::setw(8)  << "Role"
-                  << "\n"
-                  << std::string(48, '-') << "\n";
-        for (const auto& u : users)
-            std::cout << std::setw(4)  << u.id
-                      << std::setw(20) << u.name
-                      << std::setw(16) << u.username
-                      << std::setw(8)  << u.role
-                      << "\n";
+            std::string choice;
+            std::getline(std::cin, choice);
+            choice = trim(choice);
 
-        // Create a test user + account to verify models work
-        std::cout << "\n--- Creating test user 'alice' ---\n";
-        auto existing = UserModel::findByUsername(db, "alice");
-        if (!existing) {
-            auto u = UserModel::create(db, "Alice Johnson", "alice", "hashed_pw", "user");
-            auto a = AccountModel::create(db, u.id);
-            std::cout << "User created    : " << u.name << " (id=" << u.id << ")\n";
-            std::cout << "Account created : " << a.account_number
-                      << "  balance=$" << std::fixed << std::setprecision(2) << a.balance << "\n";
-        } else {
-            std::cout << "User 'alice' already exists (re-run skipped).\n";
+            if (choice == "1") {
+                std::cout << "Username: ";
+                std::string username;
+                std::getline(std::cin, username);
+                username = trim(username);
+
+                std::cout << "Password: ";
+                std::string password;
+                std::getline(std::cin, password);
+                password = trim(password);
+
+                if (Auth::loginUser(db, username, password)) {
+                    SessionData session = Session::current();
+                    if (session.role == "admin") {
+                        AdminMenu::run(db);
+                    } else {
+                        UserMenu::run(db);
+                    }
+                } else {
+                    std::cout << "Invalid username or password.\n";
+                }
+
+            } else if (choice == "2") {
+                std::cout << "Name: ";
+                std::string name;
+                std::getline(std::cin, name);
+                name = trim(name);
+
+                std::cout << "Username: ";
+                std::string username;
+                std::getline(std::cin, username);
+                username = trim(username);
+
+                std::cout << "Password: ";
+                std::string password;
+                std::getline(std::cin, password);
+                password = trim(password);
+
+                Auth::registerUser(db, name, username, password);
+
+
+            } else if (choice == "3") {
+                std::cout << "Goodbye.\n";
+                return 0;
+            } else {
+                std::cout << "Invalid option. Try again.\n";
+            }
         }
-
-        // Show accounts
-        auto accounts = AccountModel::findAll(db);
-        std::cout << "\n--- Accounts (" << accounts.size() << ") ---\n";
-        std::cout << std::setw(6)  << "ID"
-                  << std::setw(14) << "Account No."
-                  << std::setw(10) << "Balance"
-                  << "\n"
-                  << std::string(30, '-') << "\n";
-        for (const auto& a : accounts)
-            std::cout << std::setw(6)  << a.id
-                      << std::setw(14) << a.account_number
-                      << "$" << std::fixed << std::setprecision(2) << a.balance
-                      << "\n";
-
-        std::cout << "\nDev 1 layer OK — all models operational.\n";
 
     } catch (const std::exception& e) {
         std::cerr << "Fatal: " << e.what() << "\n";

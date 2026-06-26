@@ -1,0 +1,44 @@
+# CODEOWNERS — Every PR requires review from the supervisor.
+# GitHub enforces this automatically when branch protection is enabled.
+#
+# Syntax: <path pattern>   <@github-username>
+# The last matching rule wins. A more specific path overrides a general one.
+
+# ── Supervisor owns everything ──────────────────────────────────────────────
+# Every PR to main requires @parnish007 approval regardless of which files
+# are changed. This rule catches anything not covered by the rules below.
+*                               @parnish007
+
+# ── Dev 1 files (Database & Models) — complete ──────────────────────────────
+include/database/               @parnish007
+src/database/                   @parnish007
+include/models/                 @parnish007
+src/models/                     @parnish007
+include/auth/password.h         @parnish007
+src/auth/password.cpp           @parnish007
+
+# ── Dev 2 files (Auth System) — update username when Dev 2 joins ────────────
+src/main.cpp                    @parnish007
+include/auth/auth.h             @parnish007
+include/auth/session.h          @parnish007
+src/auth/auth.cpp               @parnish007
+src/auth/session.cpp            @parnish007
+
+# ── Dev 3 files (User Features) — update username when Dev 3 joins ──────────
+include/user/                   @parnish007
+src/user/                       @parnish007
+
+# ── Dev 4 files (Admin Panel) — update username when Dev 4 joins ────────────
+include/admin/                  @parnish007
+src/admin/                      @parnish007
+
+# ── Shared infrastructure — supervisor only ──────────────────────────────────
+CMakeLists.txt                  @parnish007
+.gitignore                      @parnish007
+build.bat                       @parnish007
+lib/                            @parnish007
+
+# ── Documentation — supervisor reviews all doc changes ───────────────────────
+docs/                           @parnish007
+updatelog/                      @parnish007
+README.md                       @parnish007

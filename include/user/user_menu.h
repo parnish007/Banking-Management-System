@@ -15,3 +15,9 @@
 // DEPENDENCIES: db.h, auth/session.h, user/transfer.h, user/user_account.h
 // =============================================================================
 #pragma once
+
+class DB;
+
+namespace UserMenu {
+    void run(DB& db);
+}

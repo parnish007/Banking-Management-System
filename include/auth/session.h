@@ -20,3 +20,20 @@
 // DEPENDENCIES: none
 // =============================================================================
 #pragma once
+
+#include <string>
+#include <stdexcept>
+
+struct SessionData {
+    int user_id;
+    std::string username;
+    std::string role;
+    int account_id;
+};
+
+namespace Session {
+    void start(const SessionData& data);
+    void end();
+    bool isLoggedIn();
+    SessionData current();
+}

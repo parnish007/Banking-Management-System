@@ -13,3 +13,26 @@
 //                          else throw std::runtime_error("No active session")
 // =============================================================================
 #include "auth/session.h"
+
+static bool active = false;
+static SessionData current_session;
+
+void Session::start(const SessionData& data) {
+    current_session = data;
+    active = true;
+}
+
+void Session::end() {
+    active = false;
+}
+
+bool Session::isLoggedIn() {
+    return active;
+}
+
+SessionData Session::current() {
+    if (!active) {
+        throw std::runtime_error("No active session");
+    }
+    return current_session;
+}
