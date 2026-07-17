@@ -214,7 +214,9 @@ Agree on these names before Dev 3 or Dev 4 write a single line.
 
 ---
 
-## Dev 3 — User Features
+## Dev 3 — User Features ✅ Complete
+
+> See [updatelog/dev3.md](../updatelog/dev3.md) for the full implementation log.
 
 ### Role in One Sentence
 Implement everything a logged-in regular user can do: view their balance,
@@ -223,9 +225,9 @@ view their transaction history, and send money to another account.
 ### Files Owned
 | File | What goes in it |
 |------|----------------|
-| `include/user/user_menu.h` + `src/user/user_menu.cpp` | Console menu loop for regular users |
-| `include/user/transfer.h` + `src/user/transfer.cpp` | Send money flow |
-| `include/user/user_account.h` + `src/user/user_account.cpp` | View balance + history |
+| `include/user/user_menu.h` + `src/user/user_menu.cpp` | ✅ Console menu loop for regular users |
+| `include/user/transfer.h` + `src/user/transfer.cpp` | ✅ Send money flow |
+| `include/user/user_account.h` + `src/user/user_account.cpp` | ✅ View balance + history |
 
 ---
 

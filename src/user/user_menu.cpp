@@ -1,25 +1,58 @@
-// =============================================================================
-// OWNER : Dev 3 — User Features
-// FILE  : src/user/user_menu.cpp
-// ABOUT : Implement UserMenu::run() declared in include/user/user_menu.h.
-//
-// TASKS:
-//   [ ] Print welcome message with the logged-in user's name
-//   [ ] Loop showing:
-//         === User Menu ===
-//         1. View Balance & History
-//         2. Send Money
-//         3. Logout
-//         > _
-//   [ ] On choice 1: call UserAccount::showBalanceAndHistory(db)
-//   [ ] On choice 2: call Transfer::sendMoney(db)
-//   [ ] On choice 3: call Session::end(), print "Logged out.", break loop
-//   [ ] Handle invalid input gracefully (print "Invalid option, try again.")
-// =============================================================================
 #include "user/user_menu.h"
-#include "database/db.h"
+
 #include "auth/session.h"
+#include "user/transfer.h"
+#include "user/user_account.h"
+
+#include <iostream>
+#include <limits>
+#include <string>
+
+namespace {
+
+void clearLine() {
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
+
+} // namespace
 
 void UserMenu::run(DB& db) {
-    // Stub for Dev 3 implementation
+    const std::string username = Session::current().username;
+
+    while (true) {
+        std::cout << "\n=== Welcome, " << username << " ===\n\n";
+        std::cout << "1. View Balance & Transaction History\n";
+        std::cout << "2. Send Money\n";
+        std::cout << "3. Logout\n";
+        std::cout << "\n> ";
+
+        int choice = 0;
+        if (!(std::cin >> choice)) {
+            std::cin.clear();
+            clearLine();
+            std::cout << "Invalid option. Try again.\n";
+            continue;
+        }
+        clearLine();
+
+        try {
+            switch (choice) {
+                case 1:
+                    UserAccount::showBalanceAndHistory(db);
+                    break;
+                case 2:
+                    Transfer::sendMoney(db);
+                    break;
+                case 3:
+                    Session::end();
+                    std::cout << "Logged out.\n";
+                    return;
+                default:
+                    std::cout << "Invalid option. Try again.\n";
+                    break;
+            }
+        } catch (const std::exception& e) {
+            std::cout << "Operation failed: " << e.what() << "\n";
+        }
+    }
 }

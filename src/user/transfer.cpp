@@ -1,22 +1,92 @@
-// =============================================================================
-// OWNER : Dev 3 — User Features
-// FILE  : src/user/transfer.cpp
-// ABOUT : Implement Transfer::sendMoney() declared in include/user/transfer.h.
-//
-// TASKS:
-//   [ ] Get sender's account via Session::current().account_id
-//   [ ] Prompt: "Enter recipient account number: "
-//   [ ] Prompt: "Enter amount: "
-//   [ ] Prompt: "Enter note (optional, press Enter to skip): "
-//   [ ] Validate:
-//         - recipient account exists (AccountModel::findByAccountNumber)
-//         - recipient != sender
-//         - amount > 0
-//         - sender balance >= amount  (reject if not enough funds)
-//   [ ] Create transaction: TransactionModel::create(db, from_id, to_id, amount, note)
-//   [ ] Print: "Transfer submitted. Transaction #X is PENDING admin approval."
-//   [ ] On any validation failure: print error and return without creating txn
-//
-// NOTE: Do NOT modify balances here. Balances change only when admin approves.
-// =============================================================================
 #include "user/transfer.h"
+
+#include "auth/session.h"
+#include "models/account.h"
+#include "models/transaction.h"
+
+#include <iomanip>
+#include <iostream>
+#include <limits>
+#include <sstream>
+#include <string>
+
+namespace {
+
+std::string formatMoney(double amount) {
+    std::ostringstream out;
+    out << "$" << std::fixed << std::setprecision(2) << amount;
+    return out.str();
+}
+
+void clearLine() {
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
+
+} // namespace
+
+void Transfer::sendMoney(DB& db) {
+    const SessionData session = Session::current();
+
+    auto sender = AccountModel::findByUserId(db, session.user_id);
+    if (!sender) {
+        std::cout << "Error: could not load your account.\n";
+        return;
+    }
+
+    std::cout << "\nEnter recipient account number: ";
+    std::string recipient_account_number;
+    std::getline(std::cin, recipient_account_number);
+
+    auto recipient = AccountModel::findByAccountNumber(db, recipient_account_number);
+    if (!recipient) {
+        std::cout << "Account not found.\n";
+        return;
+    }
+
+    if (recipient->id == sender->id) {
+        std::cout << "Cannot send money to yourself.\n";
+        return;
+    }
+
+    std::cout << "Enter amount: ";
+    double amount = 0.0;
+    if (!(std::cin >> amount)) {
+        std::cin.clear();
+        clearLine();
+        std::cout << "Invalid amount.\n";
+        return;
+    }
+    clearLine();
+
+    if (amount <= 0.0) {
+        std::cout << "Amount must be greater than zero.\n";
+        return;
+    }
+
+    sender = AccountModel::findByUserId(db, session.user_id);
+    if (!sender) {
+        std::cout << "Error: could not verify your balance.\n";
+        return;
+    }
+
+    if (sender->balance < amount) {
+        std::cout << "Insufficient funds. Your balance is "
+                  << formatMoney(sender->balance) << ".\n";
+        return;
+    }
+
+    std::cout << "Enter a note (optional - press Enter to skip): ";
+    std::string note;
+    std::getline(std::cin, note);
+
+    const Transaction txn = TransactionModel::create(
+        db,
+        sender->id,
+        recipient->id,
+        amount,
+        note
+    );
+
+    std::cout << "\nTransfer submitted.\n";
+    std::cout << "Transaction #" << txn.id << " is pending admin approval.\n\n";
+}

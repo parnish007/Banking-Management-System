@@ -25,9 +25,9 @@ include/auth/session.h          @UjjwalUpadhyay07
 src/auth/auth.cpp               @UjjwalUpadhyay07
 src/auth/session.cpp            @UjjwalUpadhyay07
 
-# ── Dev 3 files (User Features) — update username when Dev 3 joins ──────────
-include/user/                   @parnish007
-src/user/                       @parnish007
+# ── Dev 3 files (User Features) — @aadarsh6125-byte ──────────────────────────
+include/user/                   @aadarsh6125-byte
+src/user/                       @aadarsh6125-byte
 
 # ── Dev 4 files (Admin Panel) — update username when Dev 4 joins ────────────
 include/admin/                  @saurav777shah-web
@@ -43,3 +43,4 @@ lib/                            @parnish007
 docs/                           @parnish007
 updatelog/                      @parnish007
 README.md                       @parnish007
+GUIDE.md                        @parnish007

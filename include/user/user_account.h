@@ -14,3 +14,8 @@
 // DEPENDENCIES: db.h, models/account.h, models/transaction.h, auth/session.h
 // =============================================================================
 #pragma once
+#include "database/db.h"
+
+namespace UserAccount {
+    void showBalanceAndHistory(DB& db);
+}

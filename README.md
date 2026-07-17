@@ -10,6 +10,7 @@ Two roles: **User** (register, login, send money) and **Admin** (approve / rejec
 | I want to… | Go to |
 |------------|-------|
 | Build and run the project | [Build Guide](#build--run) |
+| Learn how to use the app | [GUIDE.md](GUIDE.md) |
 | Understand the full system design | [docs/architecture.md](docs/architecture.md) |
 | See ERD, class diagrams, call chains | [docs/diagrams.md](docs/diagrams.md) |
 | See the database tables (SQL) | [docs/database-schema.md](docs/database-schema.md) |
@@ -18,6 +19,7 @@ Two roles: **User** (register, login, send money) and **Admin** (approve / rejec
 | Understand the PR / branch workflow | [docs/git-workflow.md](docs/git-workflow.md) |
 | See what Dev 1 implemented | [updatelog/dev1.md](updatelog/dev1.md) |
 | See what Dev 2 implemented | [updatelog/dev2.md](updatelog/dev2.md) |
+| See what Dev 3 implemented | [updatelog/dev3.md](updatelog/dev3.md) |
 | See what Dev 4 implemented | [updatelog/dev4.md](updatelog/dev4.md) |
 | Find a specific source file | [Repository Structure](#repository-structure) |
 
@@ -96,9 +98,8 @@ routes users by role, and includes the admin approval workflow.
 - View pending transactions as admin
 - Approve or reject pending transactions as admin
 - View all users and account balances as admin
-
-**Coming next (Dev 3 & Dev 4):**
-- Send money, view balance, transaction history (Dev 3)
+- View balance and transaction history as a user
+- Submit money transfers for admin approval
 
 ---
 
@@ -146,6 +147,7 @@ Banking-Management-System/
 ├── updatelog/                     # Per-dev implementation logs
 │   ├── dev1.md                    # Dev 1: DB layer + models (✅ complete)
 │   ├── dev2.md                    # Dev 2: Auth system + main loop (✅ complete)
+│   ├── dev3.md                    # Dev 3: User features (✅ complete)
 │   └── dev4.md                    # Dev 4: Admin panel (✅ complete)
 │
 ├── include/                       # Header files (declarations only)
@@ -161,9 +163,9 @@ Banking-Management-System/
 │   │   ├── session.h              # [Dev 2 ✅] SessionData struct + Session namespace
 │   │   └── password.h             # [Dev 1 ✅] FNV-1a hash + verify
 │   ├── user/
-│   │   ├── user_menu.h            # [Dev 3 ⏳] User console menu
-│   │   ├── transfer.h             # [Dev 3 ⏳] Send money flow
-│   │   └── user_account.h         # [Dev 3 ⏳] View balance + history
+│   │   ├── user_menu.h            # [Dev 3 ✅] User console menu
+│   │   ├── transfer.h             # [Dev 3 ✅] Send money flow
+│   │   └── user_account.h         # [Dev 3 ✅] View balance + history
 │   └── admin/
 │       ├── admin_menu.h           # [Dev 4 ✅] Admin console menu
 │       ├── approval.h             # [Dev 4 ✅] Approve / reject transactions
@@ -183,9 +185,9 @@ Banking-Management-System/
 │   │   ├── session.cpp            # [Dev 2 ✅] complete
 │   │   └── password.cpp           # [Dev 1 ✅] complete
 │   ├── user/
-│   │   ├── user_menu.cpp          # [Dev 3 ⏳] stub — pending implementation
-│   │   ├── transfer.cpp           # [Dev 3 ⏳] stub — pending implementation
-│   │   └── user_account.cpp       # [Dev 3 ⏳] stub — pending implementation
+│   │   ├── user_menu.cpp          # [Dev 3 ✅] complete
+│   │   ├── transfer.cpp           # [Dev 3 ✅] complete
+│   │   └── user_account.cpp       # [Dev 3 ✅] complete
 │   └── admin/
 │       ├── admin_menu.cpp         # [Dev 4 ✅] complete
 │       ├── approval.cpp           # [Dev 4 ✅] complete
@@ -214,7 +216,7 @@ Build order matters — each dev depends on the one before.
 |-----|------|--------|-----------|
 | **Dev 1** | Database & Models | ✅ Complete | [updatelog/dev1.md](updatelog/dev1.md) |
 | **Dev 2** | Auth System | ✅ Complete | [updatelog/dev2.md](updatelog/dev2.md) |
-| **Dev 3** | User Features | 🔓 Unblocked — ready to start | — |
+| **Dev 3** | User Features | ✅ Complete | [updatelog/dev3.md](updatelog/dev3.md) |
 | **Dev 4** | Admin Panel | ✅ Complete | [updatelog/dev4.md](updatelog/dev4.md) |
 
 Dev 3 and Dev 4 can work in parallel — both depend only on Dev 2 which is now merged.
@@ -226,6 +228,7 @@ Dev 3 and Dev 4 can work in parallel — both depend only on Dev 2 which is now 
 | Contributor | Area | PR |
 |-------------|------|----|
 | [@UjjwalUpadhyay07](https://github.com/UjjwalUpadhyay07) | Dev 2 - Auth System | #3 |
+| [@aadarsh6125-byte](https://github.com/aadarsh6125-byte) | Dev 3 - User Features | #5 |
 | [@saurav777shah-web](https://github.com/saurav777shah-web) | Dev 4 - Admin Panel | #4 |
 
 ---
