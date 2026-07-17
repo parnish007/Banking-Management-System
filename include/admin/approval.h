@@ -22,3 +22,10 @@
 // DEPENDENCIES: db.h, models/account.h, models/transaction.h, auth/session.h
 // =============================================================================
 #pragma once
+
+class DB;
+
+namespace Approval {
+    void listPending(DB& db);
+    void reviewTransaction(DB& db);
+}

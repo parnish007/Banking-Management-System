@@ -12,3 +12,9 @@
 // DEPENDENCIES: db.h, models/user.h, models/account.h
 // =============================================================================
 #pragma once
+
+class DB;
+
+namespace UserMgmt {
+    void listAllUsers(DB& db);
+}
