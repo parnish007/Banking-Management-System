@@ -350,7 +350,9 @@ UserMenu::run(db);
 
 ---
 
-## Dev 4 — Admin Panel
+## Dev 4 — Admin Panel ✅ Complete
+
+> See [updatelog/dev4.md](../updatelog/dev4.md) for the full implementation log.
 
 ### Role in One Sentence
 Implement everything an admin can do: list pending transactions, approve or
@@ -359,9 +361,9 @@ reject them (updating balances atomically on approve), and view all user account
 ### Files Owned
 | File | What goes in it |
 |------|----------------|
-| `include/admin/admin_menu.h` + `src/admin/admin_menu.cpp` | Console menu loop for admin |
-| `include/admin/approval.h` + `src/admin/approval.cpp` | List, approve, reject transactions |
-| `include/admin/user_mgmt.h` + `src/admin/user_mgmt.cpp` | View all users and balances |
+| `include/admin/admin_menu.h` + `src/admin/admin_menu.cpp` | ✅ Console menu loop for admin |
+| `include/admin/approval.h` + `src/admin/approval.cpp` | ✅ List, approve, reject transactions |
+| `include/admin/user_mgmt.h` + `src/admin/user_mgmt.cpp` | ✅ View all users and balances |
 
 ---
 

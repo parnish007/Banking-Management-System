@@ -18,6 +18,7 @@ Two roles: **User** (register, login, send money) and **Admin** (approve / rejec
 | Understand the PR / branch workflow | [docs/git-workflow.md](docs/git-workflow.md) |
 | See what Dev 1 implemented | [updatelog/dev1.md](updatelog/dev1.md) |
 | See what Dev 2 implemented | [updatelog/dev2.md](updatelog/dev2.md) |
+| See what Dev 4 implemented | [updatelog/dev4.md](updatelog/dev4.md) |
 | Find a specific source file | [Repository Structure](#repository-structure) |
 
 ---
@@ -76,8 +77,8 @@ New user accounts are created through the app's Register option.
 
 ## Current App State
 
-The application boots, shows the main menu, and handles login and registration.
-User and Admin menus are stub placeholders until Dev 3 and Dev 4 finish.
+The application boots, shows the main menu, handles login and registration,
+routes users by role, and includes the admin approval workflow.
 
 ```
 === Banking Management System ===
@@ -92,10 +93,12 @@ User and Admin menus are stub placeholders until Dev 3 and Dev 4 finish.
 - Login as user or admin (routes to the correct menu)
 - Reject duplicate usernames
 - Reject wrong passwords with a generic error message
+- View pending transactions as admin
+- Approve or reject pending transactions as admin
+- View all users and account balances as admin
 
 **Coming next (Dev 3 & Dev 4):**
 - Send money, view balance, transaction history (Dev 3)
-- Approve / reject transactions, view all users (Dev 4)
 
 ---
 
@@ -142,7 +145,8 @@ Banking-Management-System/
 │
 ├── updatelog/                     # Per-dev implementation logs
 │   ├── dev1.md                    # Dev 1: DB layer + models (✅ complete)
-│   └── dev2.md                    # Dev 2: Auth system + main loop (✅ complete)
+│   ├── dev2.md                    # Dev 2: Auth system + main loop (✅ complete)
+│   └── dev4.md                    # Dev 4: Admin panel (✅ complete)
 │
 ├── include/                       # Header files (declarations only)
 │   ├── database/
@@ -161,9 +165,9 @@ Banking-Management-System/
 │   │   ├── transfer.h             # [Dev 3 ⏳] Send money flow
 │   │   └── user_account.h         # [Dev 3 ⏳] View balance + history
 │   └── admin/
-│       ├── admin_menu.h           # [Dev 4 ⏳] Admin console menu
-│       ├── approval.h             # [Dev 4 ⏳] Approve / reject transactions
-│       └── user_mgmt.h            # [Dev 4 ⏳] View all users
+│       ├── admin_menu.h           # [Dev 4 ✅] Admin console menu
+│       ├── approval.h             # [Dev 4 ✅] Approve / reject transactions
+│       └── user_mgmt.h            # [Dev 4 ✅] View all users
 │
 ├── src/                           # Implementation files
 │   ├── main.cpp                   # [Dev 2 ✅] Login/register loop + role routing
@@ -183,9 +187,9 @@ Banking-Management-System/
 │   │   ├── transfer.cpp           # [Dev 3 ⏳] stub — pending implementation
 │   │   └── user_account.cpp       # [Dev 3 ⏳] stub — pending implementation
 │   └── admin/
-│       ├── admin_menu.cpp         # [Dev 4 ⏳] stub — pending implementation
-│       ├── approval.cpp           # [Dev 4 ⏳] stub — pending implementation
-│       └── user_mgmt.cpp          # [Dev 4 ⏳] stub — pending implementation
+│       ├── admin_menu.cpp         # [Dev 4 ✅] complete
+│       ├── approval.cpp           # [Dev 4 ✅] complete
+│       └── user_mgmt.cpp          # [Dev 4 ✅] complete
 │
 ├── lib/
 │   └── sqlite3/                   # Bundled SQLite 3.45.1 amalgamation
@@ -211,11 +215,18 @@ Build order matters — each dev depends on the one before.
 | **Dev 1** | Database & Models | ✅ Complete | [updatelog/dev1.md](updatelog/dev1.md) |
 | **Dev 2** | Auth System | ✅ Complete | [updatelog/dev2.md](updatelog/dev2.md) |
 | **Dev 3** | User Features | 🔓 Unblocked — ready to start | — |
-| **Dev 4** | Admin Panel | 🔓 Unblocked — ready to start | — |
+| **Dev 4** | Admin Panel | ✅ Complete | [updatelog/dev4.md](updatelog/dev4.md) |
 
 Dev 3 and Dev 4 can work in parallel — both depend only on Dev 2 which is now merged.
 
 > Full ownership breakdown → [docs/dev-assignments.md](docs/dev-assignments.md)
+
+## Contributors
+
+| Contributor | Area | PR |
+|-------------|------|----|
+| [@UjjwalUpadhyay07](https://github.com/UjjwalUpadhyay07) | Dev 2 - Auth System | #3 |
+| [@saurav777shah-web](https://github.com/saurav777shah-web) | Dev 4 - Admin Panel | #4 |
 
 ---
 

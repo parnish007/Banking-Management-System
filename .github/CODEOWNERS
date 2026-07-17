@@ -18,19 +18,20 @@ include/auth/password.h         @parnish007
 src/auth/password.cpp           @parnish007
 
 # ── Dev 2 files (Auth System) — update username when Dev 2 joins ────────────
-src/main.cpp                    @parnish007
-include/auth/auth.h             @parnish007
-include/auth/session.h          @parnish007
-src/auth/auth.cpp               @parnish007
-src/auth/session.cpp            @parnish007
+
+src/main.cpp                    @UjjwalUpadhyay07
+include/auth/auth.h             @UjjwalUpadhyay07
+include/auth/session.h          @UjjwalUpadhyay07
+src/auth/auth.cpp               @UjjwalUpadhyay07
+src/auth/session.cpp            @UjjwalUpadhyay07
 
 # ── Dev 3 files (User Features) — update username when Dev 3 joins ──────────
 include/user/                   @parnish007
 src/user/                       @parnish007
 
 # ── Dev 4 files (Admin Panel) — update username when Dev 4 joins ────────────
-include/admin/                  @parnish007
-src/admin/                      @parnish007
+include/admin/                  @saurav777shah-web
+src/admin/                      @saurav777shah-web
 
 # ── Shared infrastructure — supervisor only ──────────────────────────────────
 CMakeLists.txt                  @parnish007
