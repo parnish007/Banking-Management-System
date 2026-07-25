@@ -43,8 +43,9 @@ void AdminMenu::run(DB& db) {
         std::cout << "\n=== Admin Menu ===\n";
         std::cout << "1. View Pending Transactions\n";
         std::cout << "2. Approve / Reject a Transaction\n";
-        std::cout << "3. View All Users & Accounts\n";
-        std::cout << "4. Logout\n";
+        std::cout << "3. Transfer Funds To Any Account\n";
+        std::cout << "4. View All Users & Accounts\n";
+        std::cout << "5. Logout\n";
         std::cout << "> ";
 
         std::string choice;
@@ -56,8 +57,10 @@ void AdminMenu::run(DB& db) {
         } else if (choice == "2") {
             Approval::reviewTransaction(db);
         } else if (choice == "3") {
-            UserMgmt::listAllUsers(db);
+            Approval::transferFunds(db);
         } else if (choice == "4") {
+            UserMgmt::listAllUsers(db);
+        } else if (choice == "5") {
             Session::end();
             std::cout << "Logged out." << std::endl;
             break;

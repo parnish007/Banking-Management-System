@@ -20,10 +20,12 @@ void init(DB& db) {
             id             INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id        INTEGER NOT NULL REFERENCES users(id),
             account_number TEXT    NOT NULL UNIQUE,
-            balance        REAL    NOT NULL DEFAULT 0.0 CHECK(balance >= 0),
+            balance        REAL    NOT NULL DEFAULT 500.0,
             created_at     TEXT    NOT NULL DEFAULT (datetime('now'))
         );
     )");
+
+    db.execute("UPDATE accounts SET balance = 500.0 WHERE balance = 0.0;");
 
     db.execute(R"(
         CREATE TABLE IF NOT EXISTS transactions (

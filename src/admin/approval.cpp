@@ -127,6 +127,79 @@ void listPending(DB& db) {
     }
 }
 
+void transferFunds(DB& db) {
+    std::cout << "\n=== Admin Transfer ===\n";
+
+    std::cout << "Enter sender account number: ";
+    std::string sender_input;
+    std::getline(std::cin, sender_input);
+
+    auto sender = AccountModel::findByAccountNumber(db, sender_input);
+    if (!sender.has_value()) {
+        std::cout << "Sender account not found." << std::endl;
+        return;
+    }
+
+    std::cout << "Enter recipient account number: ";
+    std::string recipient_input;
+    std::getline(std::cin, recipient_input);
+
+    if (recipient_input.empty()) {
+        std::cout << "Recipient account number is required." << std::endl;
+        return;
+    }
+
+    if (recipient_input == sender_input) {
+        std::cout << "Cannot transfer to the same account." << std::endl;
+        return;
+    }
+
+    auto recipient = AccountModel::findByAccountNumber(db, recipient_input);
+    if (!recipient.has_value()) {
+        std::cout << "Recipient account not found." << std::endl;
+        return;
+    }
+
+    std::cout << "Enter amount: ";
+    std::string amount_input;
+    std::getline(std::cin, amount_input);
+
+    double amount = 0.0;
+    try {
+        amount = std::stod(amount_input);
+    } catch (...) {
+        std::cout << "Invalid amount." << std::endl;
+        return;
+    }
+
+    if (amount <= 0.0) {
+        std::cout << "Amount must be greater than zero." << std::endl;
+        return;
+    }
+
+    std::cout << "Enter a note (optional - press Enter to skip): ";
+    std::string note;
+    std::getline(std::cin, note);
+
+    try {
+        auto session = Session::current();
+        db.execute("BEGIN;");
+        AccountModel::updateBalance(db, sender->id, sender->balance - amount);
+        AccountModel::updateBalance(db, recipient->id, recipient->balance + amount);
+        auto txn = TransactionModel::create(db, sender->id, recipient->id, amount, note);
+        TransactionModel::updateStatus(db, txn.id, "approved", session.user_id);
+        db.execute("COMMIT;");
+        std::cout << "Admin transfer completed successfully." << std::endl;
+    } catch (...) {
+        try {
+            db.execute("ROLLBACK;");
+        } catch (...) {
+            // ignore rollback failures
+        }
+        std::cout << "Failed to complete admin transfer. Changes were rolled back." << std::endl;
+    }
+}
+
 void reviewTransaction(DB& db) {
     listPending(db);
 

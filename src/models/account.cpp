@@ -1,6 +1,10 @@
 #include "models/account.h"
 #include <cstdio>
 
+namespace {
+constexpr double kDefaultStartingBalance = 500.0;
+}
+
 static Account rowToAccount(const DB::Row& r) {
     Account a;
     a.id             = std::stoi(r.at("id"));
@@ -22,10 +26,11 @@ namespace AccountModel {
 Account create(DB& db, int user_id) {
     std::string acc_num = generateAccountNumber(user_id);
     db.execute(
-        "INSERT INTO accounts (user_id, account_number, balance) VALUES (?, ?, 0.0);",
+        "INSERT INTO accounts (user_id, account_number, balance) VALUES (?, ?, ?);",
         [&](sqlite3_stmt* s) {
             sqlite3_bind_int (s, 1, user_id);
             sqlite3_bind_text(s, 2, acc_num.c_str(), -1, SQLITE_TRANSIENT);
+            sqlite3_bind_double(s, 3, kDefaultStartingBalance);
         }
     );
     return *findByUserId(db, user_id);

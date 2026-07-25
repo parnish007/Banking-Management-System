@@ -27,5 +27,6 @@ class DB;
 
 namespace Approval {
     void listPending(DB& db);
+    void transferFunds(DB& db);
     void reviewTransaction(DB& db);
 }
