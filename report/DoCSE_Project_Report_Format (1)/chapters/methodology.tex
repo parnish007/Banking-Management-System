@@ -1,0 +1,160 @@
+\chapter{Design and Implementation}
+\label{chap:methodology}
+
+\section{System Overview}
+\begin{itemize}
+    \item The application is a single-console binary written in C++17 (g++ / MinGW).
+    \item The bundled SQLite 3.45.1 amalgamation (\texttt{lib/sqlite3/}) is compiled directly into the binary; no external database server or install step is required.
+    \item The system is organized into four strict layers: \textbf{presentation} (console menus), \textbf{auth/session}, \textbf{models}, and \textbf{database}. A layer may only call the layer directly below it.
+\end{itemize}
+
+Figure~\ref{fig:architecture} shows the layered architecture and which team member owned each layer.
+
+\begin{figure}[h!]
+    \centering
+    \begin{tikzpicture}[
+        layer/.style={rectangle, draw, rounded corners, minimum width=10cm, minimum height=1.4cm, align=center, font=\small},
+        node distance=0.4cm
+    ]
+        \node[layer, fill=blue!10] (pres) {\textbf{Presentation Layer} --- \texttt{main.cpp}, \texttt{UserMenu}, \texttt{AdminMenu}\\ \footnotesize reads input, prints output, calls business logic; no SQL here};
+        \node[layer, fill=orange!15, below=of pres] (auth) {\textbf{Auth / Session Layer} --- \texttt{Auth}, \texttt{Session}, \texttt{Password}\\ \footnotesize validates credentials, hashes passwords, tracks who is logged in};
+        \node[layer, fill=green!15, below=of auth] (model) {\textbf{Model Layer} --- \texttt{UserModel}, \texttt{AccountModel}, \texttt{TransactionModel}\\ \footnotesize translates C++ structs to/from parameterized SQL rows};
+        \node[layer, fill=violet!15, below=of model] (db) {\textbf{Database Layer} --- \texttt{DB} class, \texttt{Schema::init}\\ \footnotesize wraps raw \texttt{sqlite3\_*} calls; only file that touches SQLite directly};
+
+        \draw[-{Latex[length=2mm]}] (pres) -- (auth);
+        \draw[-{Latex[length=2mm]}] (auth) -- (model);
+        \draw[-{Latex[length=2mm]}] (model) -- (db);
+    \end{tikzpicture}
+    \caption{Layered system architecture. Each layer may only call the layer directly beneath it.}
+    \label{fig:architecture}
+\end{figure}
+
+\section{System Requirement Specifications}
+
+\subsection{Software Requirements}
+\begin{itemize}
+    \item Programming language: C++17
+    \item Libraries: SQLite 3.45.1 (amalgamation bundled in \texttt{lib/sqlite3/})
+    \item Build tools: CMake 3.16+, MinGW (g++), \texttt{mingw32-make}
+    \item OS: Windows (tested with MinGW); builds with an equivalent toolchain on Linux
+    \item Editor/IDE: VS Code and command-line tools
+\end{itemize}
+
+\subsubsection{Functional Requirements}
+\begin{itemize}
+    \item The system shall allow a new user to register with a name, username, and password, creating one associated account with a zero balance.
+    \item The system shall authenticate users by username and hashed password and route them to a role-specific menu (user or admin).
+    \item A user shall be able to view their balance and full transaction history.
+    \item A user shall be able to submit a transfer to another account, which is recorded as \texttt{PENDING} and does not alter any balance.
+    \item An admin shall be able to list pending transfers and approve or reject each one; approval must update both balances and the transfer status atomically.
+    \item An admin shall be able to perform a direct transfer between any two accounts (recorded as already \texttt{approved}), independent of the pending-approval queue.
+    \item An admin shall be able to view all registered users together with their account numbers and balances.
+\end{itemize}
+
+\subsubsection{Non-Functional Requirements}
+\begin{itemize}
+    \item \textbf{Data integrity:} all monetary updates that touch more than one row (transfer approval, direct admin transfer) are wrapped in an explicit \texttt{BEGIN}/\texttt{COMMIT} transaction with a \texttt{ROLLBACK} on failure.
+    \item \textbf{Portability:} the SQLite amalgamation is compiled into the binary, so the application has no external run-time dependency and behaves identically on every machine.
+    \item \textbf{Robustness:} \texttt{PRAGMA foreign\_keys = ON} and \texttt{CHECK} constraints (e.g. \texttt{balance >= 0}, \texttt{amount > 0}) enforce data validity at the database level, not just in application code.
+    \item \textbf{Durability:} \texttt{PRAGMA journal\_mode = WAL} is enabled so the database is protected against corruption if the process is terminated mid-write.
+\end{itemize}
+
+\subsection{Hardware Requirements}
+Not applicable --- this is a software project with no specialized hardware dependency. Any machine capable of running a MinGW/GCC C++17 toolchain is sufficient.
+
+\section{System Design}
+
+\subsection{Database Design}
+Figure~\ref{fig:erd} shows the three-table schema. Every foreign key is enforced (\texttt{PRAGMA foreign\_keys = ON}), so a transaction can never reference a non-existent account.
+
+\begin{figure}[h!]
+    \centering
+    \begin{tikzpicture}[
+        tbl/.style={rectangle, draw, rounded corners, align=left, font=\footnotesize, minimum width=4.2cm},
+        node distance=1.6cm and 2.2cm
+    ]
+        \node[tbl, fill=green!10] (users) {\textbf{users}\\ id (PK)\\ name, username (UK)\\ password\_hash\\ role: user/admin\\ created\_at};
+        \node[tbl, fill=blue!10, right=of users] (accounts) {\textbf{accounts}\\ id (PK)\\ user\_id (FK $\to$ users)\\ account\_number (UK)\\ balance (CHECK $\geq 0$)\\ created\_at};
+        \node[tbl, fill=orange!10, right=of accounts] (transactions) {\textbf{transactions}\\ id (PK)\\ from\_account\_id (FK)\\ to\_account\_id (FK)\\ amount (CHECK $>0$)\\ status: pending/approved/rejected\\ reviewed\_by (FK $\to$ users)};
+
+        \draw[-{Latex[length=2mm]}] (users) -- node[above,font=\tiny]{1:0..1} (accounts);
+        \draw[-{Latex[length=2mm]}] (accounts) -- node[above,font=\tiny]{1:0..*} (transactions);
+    \end{tikzpicture}
+    \caption{Entity-Relationship overview of the \texttt{banking.db} schema.}
+    \label{fig:erd}
+\end{figure}
+
+\subsection{Module Design}
+\begin{itemize}
+    \item \textbf{\texttt{database/}} (Dev 1) --- the \texttt{DB} class wraps \texttt{sqlite3\_open}/\texttt{prepare}/\texttt{step}/\texttt{finalize} behind four methods: \texttt{execute(sql)}, \texttt{execute(sql, binder)}, \texttt{query(sql)}, \texttt{query(sql, binder)}. \texttt{Schema::init} creates all tables with \texttt{IF NOT EXISTS} and seeds a default admin (\texttt{admin} / \texttt{admin123}) on first run.
+    \item \textbf{\texttt{models/}} (Dev 1) --- \texttt{UserModel}, \texttt{AccountModel}, \texttt{TransactionModel}: plain structs plus namespaced free functions returning \texttt{std::optional<T>} for single-row lookups and \texttt{std::vector<T>} for lists.
+    \item \textbf{\texttt{auth/}} (Dev 2) --- \texttt{Auth::registerUser}/\texttt{loginUser} validate input and call the model layer; \texttt{Session} is a single static in-memory struct holding the logged-in user's id, username, role, and account id; \texttt{Password} implements FNV-1a hashing.
+    \item \textbf{\texttt{user/}} (Dev 3) --- \texttt{UserMenu} (menu loop), \texttt{Transfer::sendMoney} (creates a \texttt{PENDING} transaction; never touches balances directly), \texttt{UserAccount::showBalanceAndHistory}.
+    \item \textbf{\texttt{admin/}} (Dev 4) --- \texttt{AdminMenu} (5-option menu loop), \texttt{Approval::listPending}/\texttt{reviewTransaction} (approve/reject with atomic balance update), \texttt{Approval::transferFunds} (direct admin-initiated transfer between any two accounts), \texttt{UserMgmt::listAllUsers}.
+\end{itemize}
+
+\section{Algorithms and Flowcharts}
+
+\subsection{Transfer Approval Algorithm}
+The core correctness-critical algorithm is transfer approval, which must update two account balances and one transaction row as a single atomic unit:
+
+\begin{lstlisting}[language=C++, caption={Simplified transfer-approval logic (Approval::reviewTransaction)}]
+loadPendingTransaction(id);
+if (transaction.status != "pending") return;          // already reviewed
+if (sender.balance < transaction.amount)               // re-checked at approval time
+    return "insufficient balance";
+
+db.execute("BEGIN;");
+AccountModel::updateBalance(sender.id,   sender.balance   - amount);
+AccountModel::updateBalance(receiver.id, receiver.balance + amount);
+TransactionModel::updateStatus(transaction.id, "approved", admin_id);
+db.execute("COMMIT;");   // on any exception: db.execute("ROLLBACK;")
+\end{lstlisting}
+
+The sender's balance is checked twice: once when the user submits the transfer (\texttt{Transfer::sendMoney}), and again at approval time, since another transfer may have been approved in between and drained the sender's balance.
+
+Figure~\ref{fig:statemachine} shows the resulting transaction lifecycle: every transfer starts \texttt{PENDING} and moves to exactly one terminal state.
+
+\begin{figure}[h!]
+    \centering
+    \begin{tikzpicture}[
+        st/.style={rectangle, draw, rounded corners, minimum width=3cm, minimum height=1cm, align=center, font=\small},
+        node distance=2.6cm
+    ]
+        \node[st, fill=yellow!20] (pending) {PENDING};
+        \node[st, fill=green!20, above right=1.2cm and 2.6cm of pending] (approved) {APPROVED\\\footnotesize balances updated};
+        \node[st, fill=red!15, below right=1.2cm and 2.6cm of pending] (rejected) {REJECTED\\\footnotesize no balance change};
+
+        \draw[-{Latex[length=2mm]}] (pending) -- node[above,sloped,font=\tiny]{admin approves} (approved);
+        \draw[-{Latex[length=2mm]}] (pending) -- node[below,sloped,font=\tiny]{admin rejects} (rejected);
+    \end{tikzpicture}
+    \caption{Transaction status lifecycle. Both end states are terminal.}
+    \label{fig:statemachine}
+\end{figure}
+
+\section{Tools and Technologies Used}
+
+\begin{table}[h!]
+    \centering
+    \caption{Tools and technologies used in this project}
+    \label{tab:tools}
+    \begin{tabularx}{\textwidth}{| l | Y |}
+        \hline
+        \textbf{Component} & \textbf{Choice} \\ \hline
+        Language & C++17 \\ \hline
+        Database & SQLite 3.45.1, bundled amalgamation \\ \hline
+        Build system & CMake 3.16+, generating MinGW Makefiles \\ \hline
+        Compiler & GCC (MinGW) \\ \hline
+        Version control & Git, with per-feature branches and PR review \\ \hline
+        Editor & Visual Studio Code \\ \hline
+    \end{tabularx}
+\end{table}
+
+Figure~\ref{fig:usecase} shows the use-case diagram covering both roles supported by the system.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.75\linewidth]{usecase.png}
+    \caption{Use-case diagram: User and Admin interactions with the Banking Management System}
+    \label{fig:usecase}
+\end{figure}

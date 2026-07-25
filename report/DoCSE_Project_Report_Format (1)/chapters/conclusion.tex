@@ -1,0 +1,18 @@
+\chapter{Conclusion and Future Works}
+
+This project successfully delivered a working, console-based Banking Management System in C++17 backed by an embedded SQLite database. All four stated objectives were achieved: secure registration and login, per-user account and balance tracking, a pending-transfer submission flow, and an atomic admin-approval workflow. The design evolved from the original proposal --- which specified PIN-based login, an \texttt{Account} inheritance hierarchy, and flat-file persistence --- to a simpler single-account, SQLite-backed model adopted during the design phase on the supervisor's guidance, trading some OOP breadth for stronger, database-enforced data integrity.
+
+\section{Limitations}
+\begin{itemize}
+    \item The system is single-threaded and console-only; it was validated only on Windows with MinGW, though it should build on Linux with an equivalent toolchain.
+    \item Password hashing (FNV-1a) is adequate for a learning project but is not cryptographically hardened against offline attack.
+    \item Verification relied on manual smoke testing (Appendix~A) rather than an automated test suite, so regression coverage is limited.
+\end{itemize}
+
+\section{Future Enhancements}
+\begin{itemize}
+    \item Replace FNV-1a with a proper password KDF (bcrypt or Argon2id) --- the module is already isolated for exactly this swap.
+    \item Add a small automated test suite (e.g. Catch2) covering the model layer and the approval transaction logic.
+    \item Support multiple accounts per user, which the schema already allows (no uniqueness constraint on \texttt{user\_id} in \texttt{accounts} beyond the current one-per-user convention).
+    \item Add a thin web or GUI front-end over the existing model/database layers, which were designed to be independent of the console presentation layer.
+\end{itemize}

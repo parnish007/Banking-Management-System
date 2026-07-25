@@ -1,0 +1,72 @@
+\chapter{Results and Discussion}
+
+This chapter documents the outcomes of the implemented system, the features verified during testing, and observed limitations.
+
+\section{Implemented Features}
+The working system implements:
+\begin{itemize}
+    \item User registration and secure login with hashed passwords.
+    \item Per-user account creation and balance tracking.
+    \item Transfer submission by users, creating transactions with status `PENDING`.
+    \item Admin review workflow to approve or reject transfers; approvals update both accounts atomically.
+    \item Console-based menus for user and admin operations.
+\end{itemize}
+
+\section{Smoke Tests and Sample Run}
+An automated sample run (login as `admin` and view admin menu) was executed and captured; the transcript is included in Appendix A as `console_output.txt`. The binary builds successfully using `build.bat` (CMake + MinGW) — see the Build Guide section in Chapter 3 for exact commands.
+
+\section{Challenges and Limitations}
+The console UI is intentionally minimal and synchronous; it does not support concurrent users. The bundled SQLite approach simplifies portability but is not a substitute for a production DB server. More extensive automated tests and integration testing would be required for deployment.
+
+\section{Implemented Features}
+This section describes the key features or functionalities that were successfully implemented during the project. Each feature should be briefly explained, highlighting its purpose and significance.
+
+\textbf{Guidelines by project type:}
+\begin{itemize}
+    \item \textbf{Software projects}: user-facing features, system modules, APIs, performance improvements
+    \item \textbf{Machine learning projects}: trained models, inference capabilities, automation features
+    \item \textbf{Hardware projects}: functional units, sensing or control capabilities, integrated subsystems
+\end{itemize}
+
+\section{Results and Performance Analysis}
+This section presents the outcomes of the project in terms of functionality, performance, and correctness.
+
+\textbf{Important instruction on figures:}  
+Only \textbf{key and representative figures} that directly support the discussion of results should be included in this chapter. Screenshots, graphs, plots, or experimental outputs that are essential for understanding the results may be placed here.  
+\textbf{All additional, repetitive, or supporting figures must be placed in the Appendix.}
+
+\textbf{Guidelines by project type:}
+\begin{itemize}
+    \item \textbf{Software projects}: system output screenshots, response time graphs, feature demonstrations
+    \item \textbf{Machine learning projects}: accuracy/loss curves, confusion matrices, comparison tables
+    \item \textbf{Hardware projects}: experimental readings, performance plots, output waveforms
+\end{itemize}
+
+All figures must be clearly labeled and referenced in the text (e.g., Figure \#Number).
+
+\section{Comparison with Objectives or Existing Systems}
+This section discusses how the obtained results align with the original project objectives. If applicable, results should be compared with:
+\begin{itemize}
+    \item Initial project objectives
+    \item Existing systems, methods, or baseline approaches
+\end{itemize}
+
+Any deviations from the planned objectives should be clearly stated and justified.
+
+\section{Challenges and Limitations}
+This section discusses the major challenges faced during the project execution and the limitations of the implemented system.
+
+\textbf{Guidelines by project type:}
+\begin{itemize}
+    \item \textbf{Software projects}: scalability issues, integration problems, performance constraints
+    \item \textbf{Machine learning projects}: data limitations, overfitting, computational constraints
+    \item \textbf{Hardware projects}: component availability, power constraints, environmental issues
+\end{itemize}
+
+Students should also explain how these challenges were mitigated or why certain limitations remain.
+
+\section{Discussion}
+This section provides an overall interpretation of the results. It should connect the outcomes with the project objectives and explain the significance of the findings. Any unexpected results or negative findings should be discussed honestly and critically.
+
+% \section{Summary}
+% This section briefly summarizes the key results, major findings, and insights obtained from the project work.

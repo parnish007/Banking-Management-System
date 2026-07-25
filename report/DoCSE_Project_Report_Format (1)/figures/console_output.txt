@@ -1,0 +1,144 @@
+=== Banking Management System ===
+1. Login
+2. Register
+3. Exit
+> 2
+Name: Alice Johnson
+Username: alice
+Password: alicepass
+Registration successful! Your account number is: ACC000002
+
+=== Banking Management System ===
+1. Login
+2. Register
+3. Exit
+> 2
+Name: Bob Sharma
+Username: bob
+Password: bobpass
+Registration successful! Your account number is: ACC000003
+
+=== Banking Management System ===
+1. Login
+2. Register
+3. Exit
+> 1
+Username: alice
+Password: alicepass
+
+=== Welcome, alice ===
+
+1. View Balance & Transaction History
+2. Send Money
+3. Logout
+
+> 1
+
+Account   : ACC000002
+Balance   : $500.00
+
+No transactions yet.
+
+
+=== Welcome, alice ===
+
+1. View Balance & Transaction History
+2. Send Money
+3. Logout
+
+> 2
+
+Enter recipient account number: ACC000003
+Enter amount: 150
+Enter a note (optional - press Enter to skip): rent
+
+Transfer submitted.
+Transaction #1 is pending admin approval.
+
+
+=== Welcome, alice ===
+
+1. View Balance & Transaction History
+2. Send Money
+3. Logout
+
+> 3
+Logged out.
+
+=== Banking Management System ===
+1. Login
+2. Register
+3. Exit
+> 1
+Username: admin
+Password: admin123
+
+Welcome, Admin admin
+
+=== Admin Menu ===
+1. View Pending Transactions
+2. Approve / Reject a Transaction
+3. Transfer Funds To Any Account
+4. View All Users & Accounts
+5. Logout
+> 1
+
+ID    | Date                | From Account | To Account   | Amount     | Note
+------+---------------------+--------------+--------------+------------+---------------------------
+1     | 2026-07-25 18:42:10 | ACC000002    | ACC000003    |$    150.00 | rent
+
+=== Admin Menu ===
+1. View Pending Transactions
+2. Approve / Reject a Transaction
+3. Transfer Funds To Any Account
+4. View All Users & Accounts
+5. Logout
+> 2
+
+ID    | Date                | From Account | To Account   | Amount     | Note
+------+---------------------+--------------+--------------+------------+---------------------------
+1     | 2026-07-25 18:42:10 | ACC000002    | ACC000003    |$    150.00 | rent
+
+Enter Transaction ID to review (0 to cancel): 1
+
+Transaction #1 details:
+Date       : 2026-07-25 18:42:10
+From       : ACC000002
+To         : ACC000003
+Amount     : $150.00
+Note       : rent
+Status     : pending
+
+Action: (A)pprove / (R)eject / (C)ancel: A
+Transaction #1 approved.
+
+=== Admin Menu ===
+1. View Pending Transactions
+2. Approve / Reject a Transaction
+3. Transfer Funds To Any Account
+4. View All Users & Accounts
+5. Logout
+> 4
+
+ID   | Name            | Username | Account No. | Balance    | Role  | Joined
+-----|-----------------|----------|-------------|------------|-------|-------------------
+1    | Administrator   | admin    | —           | —          | admin | 2026-07-25 18:40:02
+2    | Alice Johnson   | alice    | ACC000002   |$350.00     | user  | 2026-07-25 18:41:15
+3    | Bob Sharma      | bob      | ACC000003   |$650.00     | user  | 2026-07-25 18:41:40
+---------------------------------------------------------------------------------------------------------
+
+=== Admin Menu ===
+1. View Pending Transactions
+2. Approve / Reject a Transaction
+3. Transfer Funds To Any Account
+4. View All Users & Accounts
+5. Logout
+> 5
+Logged out.
+
+=== Banking Management System ===
+1. Login
+2. Register
+3. Exit
+> 3
+Goodbye.

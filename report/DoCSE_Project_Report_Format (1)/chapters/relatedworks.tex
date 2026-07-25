@@ -1,0 +1,11 @@
+\chapter{Related Works}
+
+A number of prior academic and industrial works have explored the design of banking and financial-record software; this chapter situates the present project within that context.
+
+\citet{gamma1994} introduced the design-patterns vocabulary that informs the separation adopted here between the database wrapper, the data models, and the console menu layer, even though no single named pattern is applied verbatim. \citet{stroustrup2013} and \citet{schildt2014} provide the C++17 language grounding used throughout the implementation, including RAII-based lifetime management for the SQLite connection handle and the use of \texttt{std::optional} for lookups that may legitimately fail.
+
+\citet{singhverma2018} describe a similarly scoped bank account management system implemented in Java, supporting savings/current account types, transaction logging, and user authentication. The present project covers comparable functional ground --- account management, transfers, and transaction history --- but in C++ with an embedded SQLite datastore rather than a Java/relational-server stack, and adds an explicit admin-approval gate that every user-submitted transfer must pass through before any balance changes.
+
+\citet{pandeykarmacharya2020} discuss a cooperative bank management tool built for small Nepali financial institutions in C++, and highlight the practical value of a lightweight, dependency-light persistence layer in environments where a full database server cannot be assumed. This observation directly informed the choice of a bundled SQLite amalgamation (compiled straight into the binary) over a networked database engine for this project: the resulting build has zero external run-time dependencies and behaves identically on every team member's machine.
+
+Compared to these works, this project's main point of difference is the two-stage transfer model: a regular user can only \emph{request} a transfer, which is recorded with status \texttt{PENDING}; balances are never modified until an administrator explicitly approves the request inside a single atomic database transaction, or rejects it with no state change. This mirrors a simple operational control found in real banking back-offices and was not a feature of the reviewed prior systems.

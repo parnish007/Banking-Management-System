@@ -1,0 +1,10 @@
+\noindent
+This project implements a console-based Banking Management System written in C++17 with a bundled SQLite3 datastore. The system supports two primary roles: end users who can register, log in, view balances, and submit transfer requests; and administrators who can review, approve, or reject pending transfers, perform direct transfers between any two accounts, and view all user accounts. The implementation emphasizes a small, maintainable codebase with a lightweight database wrapper, clear separation between models and console UI, and safe SQL parameter binding via prepared statements.
+
+The initial project proposal envisioned a PIN-based, file-persisted system built around an \texttt{Account} inheritance hierarchy (\texttt{SavingsAccount} / \texttt{CurrentAccount}). During the design phase, and on the supervisor's guidance, this was revised in favour of a single-account model backed by an embedded SQLite database, which better demonstrates parameterized SQL, schema constraints, and transactional integrity while keeping the codebase small enough for four contributors to own independent modules.
+
+Key outcomes include a working registration and authentication flow with hashed passwords, per-user account creation, transactional handling of money transfers (held \texttt{PENDING} until admin approval), and an admin approval workflow that updates both account balances atomically inside a single database transaction. The system was implemented using CMake and built with MinGW on Windows; the SQLite amalgamation is compiled directly into the binary so no external database installation is required.
+
+\begin{keywords}
+Banking, C++17, SQLite, Console UI, Transaction Approval, Prepared Statements
+\end{keywords}

@@ -1,0 +1,21 @@
+\chapter{Introduction}
+
+This report documents the Banking Management System developed as a semester project. The application is a console-based C++ program that provides core banking functionality backed by an embedded SQLite database. The design goal was to produce a simple, auditable system that demonstrates correct database-backed application patterns: user authentication, account management, and a transaction approval workflow.
+
+\section{Background}
+The initial project proposal (submitted April 2026) described a system built around C++ class inheritance (\texttt{Account} $\rightarrow$ \texttt{SavingsAccount}/\texttt{CurrentAccount}), PIN-based login, and plain-text file persistence. During the design phase, in consultation with the project supervisor, the team revised this design: the final system uses a single \texttt{Account} model per user, username/password authentication, and an embedded SQLite3 database in place of flat files. This change was made to give the project a stronger, more realistic data-integrity story (parameterized queries, schema-level constraints, atomic multi-row updates) without the added complexity of a class hierarchy that added little value once the account types were consolidated.
+
+\section{Objectives}
+The project objectives were:
+\begin{itemize}
+    \item Implement a secure registration and login system with password hashing.
+    \item Provide per-user accounts with balance tracking and transaction history.
+    \item Implement a transfer system where user-submitted transfers are marked \texttt{PENDING} and require an admin to approve or reject.
+    \item Ensure administrative actions (approving transfers, direct admin transfers) update balances atomically.
+\end{itemize}
+
+\section{Motivation and Significance}
+The system was chosen to demonstrate practical use of an embedded relational database in managing financial transactions with correctness guarantees, and to practice modular C++ design across a four-person team. The approval workflow models a simple operational control used in many real-world financial systems, and the project emphasizes correct use of transactions and schema constraints (\texttt{CHECK}, \texttt{UNIQUE}, foreign keys) to avoid corruption or inconsistency.
+
+\section{Project Structure and Team}
+The codebase is organized into four independent layers, each owned by one contributor: Dev 1 (Trilochan Sharma) implemented the \texttt{DB} wrapper, schema initialization, and the three data models (users, accounts, transactions); Dev 2 (Ujjwal Upadhaya) implemented authentication, in-memory session management, and the main entry loop; Dev 3 (Aadarsh Prasad) implemented user-facing features (view balance and history, submit a transfer); and Dev 4 (Saurav Shah) implemented the admin approval workflow, direct admin transfers, and the user-management view. See Chapter~\ref{chap:methodology} for the layered architecture and Appendix~A for a captured sample run.
