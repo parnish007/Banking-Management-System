@@ -11,8 +11,11 @@ CMakeCache.txt
 .vscode/
 .claude/
 notes/
+report/DoCSE_Project_Report_Format (1)/
+report/DoCSE_Project_Report_Format (1)/figures/console_output.txt
 
 # Keep bundled SQLite source
 !lib/sqlite3/sqlite3.c
 !lib/sqlite3/sqlite3.h
 !lib/sqlite3/sqlite3ext.h
+texput.log

@@ -83,9 +83,7 @@ Welcome, Admin admin
 5. Logout
 > 1
 
-ID    | Date                | From Account | To Account   | Amount     | Note
-------+---------------------+--------------+--------------+------------+---------------------------
-1     | 2026-07-25 18:42:10 | ACC000002    | ACC000003    |$    150.00 | rent
+<pending transactions table moved to LaTeX table>
 
 === Admin Menu ===
 1. View Pending Transactions
@@ -95,9 +93,7 @@ ID    | Date                | From Account | To Account   | Amount     | Note
 5. Logout
 > 2
 
-ID    | Date                | From Account | To Account   | Amount     | Note
-------+---------------------+--------------+--------------+------------+---------------------------
-1     | 2026-07-25 18:42:10 | ACC000002    | ACC000003    |$    150.00 | rent
+% [Pending transactions table removed — formatted in LaTeX table in the report]
 
 Enter Transaction ID to review (0 to cancel): 1
 
@@ -120,12 +116,8 @@ Transaction #1 approved.
 5. Logout
 > 4
 
-ID   | Name            | Username | Account No. | Balance    | Role  | Joined
------|-----------------|----------|-------------|------------|-------|-------------------
-1    | Administrator   | admin    | —           | —          | admin | 2026-07-25 18:40:02
-2    | Alice Johnson   | alice    | ACC000002   |$350.00     | user  | 2026-07-25 18:41:15
-3    | Bob Sharma      | bob      | ACC000003   |$650.00     | user  | 2026-07-25 18:41:40
----------------------------------------------------------------------------------------------------------
+<users & accounts table moved to LaTeX table>
+
 
 === Admin Menu ===
 1. View Pending Transactions

@@ -1,12 +1,18 @@
 ﻿% Consolidated report.tex for the Banking Management System.
 \documentclass[12pt,a4paper]{report}
-\usepackage[margin=1in]{geometry}
+\usepackage[a4paper,margin=1in,top=1in,bottom=1in]{geometry}
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{hyperref}
 \usepackage{natbib}
 \usepackage{verbatim}
 \usepackage{tabularx}
+\usepackage{times}
+% use \linespread for line spacing to avoid missing setspace package
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily\small,breaklines=true}
 
 
 
@@ -16,6 +22,10 @@
 \graphicspath{{figures/}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.6em}
+\linespread{1.05}\selectfont
+\setlist{itemsep=0.3em,topsep=0.4em}
+\titleformat{\chapter}[block]{\normalfont\Large\bfseries}{\thechapter}{1em}{}
+\titlespacing*{\chapter}{0pt}{0pt}{0.8em}
 
 
 
@@ -23,17 +33,22 @@
 % ------- Project metadata -------
 \title{Banking Management System}
 \date{27 July 2026}
-\newcommand{\coursecode}{COMP XXXX}
+\newcommand{\coursecode}{ENGG 102}
 \newcommand{\yeargroup}{I}
 \newcommand{\semester}{II}
-\newcommand{\groupname}{Computer Science}
+\newcommand{\groupname}{Computer Engineering}
 \newcommand{\memberA}{Trilochan Sharma}
-\newcommand{\memberB}{Ujjwal Upadhya}
-\newcommand{\memberC}{Adarsha Shah}
+\newcommand{\memberB}{Ujjwal Upadhaya}
+\newcommand{\memberC}{Aadarsh Prasad}
 \newcommand{\memberD}{Saurav Shah}
 \newcommand{\supervisorname}{Aayush Paudel}
+\newcommand{\submittedto}{Suman Shrestha}
+\newcommand{\coordinatorname}{Department Coordinator}
+\newcommand{\departmentname}{Department of Computer Science and Engineering}
 
 \begin{document}
+% Relax line-breaking to reduce remaining overfull boxes in verbatim/table outputs
+\sloppy
 
 \begin{titlepage}
   \centering
@@ -45,9 +60,14 @@
   {\large (For partial fulfillment of 1st Year / 2nd Semester)}\\[1.2cm]
   {\Large Submitted by:}\\[0.4cm]
   {\memberA \\ \memberB \\ \memberC \\ \memberD}\\[1cm]
-  {\large Submitted to: \\ \supervisorname \\ Department of Computer Science and Engineering}\\[1cm]
+  {\large Submitted to: \\ \submittedto \\ \departmentname}\\[0.6cm]
+  {\large Coordinator: \\ \coordinatorname \\ \departmentname}\\[1cm]
   {27 July 2026}
 \end{titlepage}
+
+% Insert bona fide certificate (contains supervisor/coordinator signatures)
+\cleardoublepage
+\input{chapters/bonafide.tex}
 
 \cleardoublepage
 \section*{Acknowledgements}
@@ -142,27 +162,15 @@ A typical user session begins with registration and login, followed by account a
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.72\textwidth]{image2.png}
+  \includegraphics[width=\textwidth]{image2.png}
   \caption{System architecture of the Banking Management System}
   \label{fig:architecture}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.72\textwidth]{image3.png}
-  \caption{Class hierarchy for the core banking components}
-  \label{fig:classhierarchy}
 \end{figure}
 
 \section{Admin Interface and Approval Flow}
 The administrator interface provides an efficient way to manage pending transfers and monitor account activity. From the admin panel, the supervisor can inspect transaction requests, verify the involved accounts, and decide whether to approve or reject each transaction. This design closely reflects the approval-based control often used in simple financial systems and helps enforce a review step before funds are moved.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.72\textwidth]{image4.png}
-  \caption{Withdrawal process activity flow used as an example of transaction handling}
-  \label{fig:transactionflow}
-\end{figure}
+% Figure removed per request (was image4.png)
 
 \section{Testing and Observations}
 The system was tested through a sample execution flow that covered registration, login, balance viewing, transfer submission, and admin approval. The test run confirmed that the application could successfully create accounts, store transactions, and update balances after approval. The captured transcript in the appendix provides additional evidence of the working flow and the behavior of the console interface during execution.
@@ -200,16 +208,49 @@ The core features implemented in this system include:
 \chapter{Conclusion and Future Work}
 The Banking Management System developed in this project successfully demonstrates the core concepts of banking software through a compact, database-backed console application. The project provides a solid foundation for further enhancement, including a graphical user interface, stronger authentication practices, more detailed reporting, and support for additional banking features such as loan management or statement generation.
 
-\cleardoublepage
-\addcontentsline{toc}{chapter}{References}
-\bibliographystyle{apalike}
-\bibliography{report}
 
 \cleardoublepage
 \chapter*{Appendix A: Console Output and Run Transcript}
 \addcontentsline{toc}{chapter}{Appendix A: Console Output and Run Transcript}
 The sample console transcript captured during project testing is included below and is also stored in the figures folder for reference.
+% Render console output smaller and allow flexible line breaking to avoid overfull boxes
+% Console transcript: scale down to text width to avoid overfull boxes
+% Render console output smaller and allow flexible line breaking to avoid overfull boxes
+\begingroup
+\small
+\ttfamily
+\sloppy
 \verbatiminput{figures/console_output.txt}
+\endgroup
+
+% Nicely formatted tables for the transcript (replaces long ASCII tables)
+\begin{table}[H]
+  \centering
+  \small
+  \begin{tabularx}{\textwidth}{l l l l r X}
+    \hline
+    ID & Date & From & To & Amount & Note \\
+    \hline
+    1 & 2026-07-25 18:42:10 & ACC000002 & ACC000003 & \$150.00 & rent \\
+    \hline
+  \end{tabularx}
+  \caption{Sample pending transactions shown in the console transcript.}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \small
+  \begin{tabularx}{\textwidth}{l X l l r l}
+    \hline
+    ID & Name & Username & Account No. & Balance & Role \\
+    \hline
+    1 & Administrator & admin & -- & -- & admin \\
+    2 & Alice Johnson & alice & ACC000002 & \$350.00 & user \\
+    3 & Bob Sharma & bob & ACC000003 & \$650.00 & user \\
+    \hline
+  \end{tabularx}
+  \caption{Sample users and accounts shown in the console transcript.}
+\end{table}
 
 \end{document}
 
